@@ -93,9 +93,16 @@
             font-weight: bold;
         }
 
-        .btn-yes:hover, .btn-yes:active {
-            transform: scale(1.1);
+        .btn-yes:hover, .btn-yes:active, .btn-yes.pressed {
+            transform: scale(1.15);
             box-shadow: 0 6px 25px rgba(196, 69, 105, 0.45);
+        }
+
+        @media (max-width: 480px) {
+            .btn-yes {
+                padding: 25px 55px;
+                font-size: 1.8rem;
+            }
         }
 
         .btn-no {
@@ -422,8 +429,12 @@
         // Yes button - works on both desktop and mobile
         const yesBtn = document.getElementById('yesBtn');
         yesBtn.addEventListener('click', sayYes);
+        yesBtn.addEventListener('touchstart', function(e) {
+            yesBtn.classList.add('pressed');
+        });
         yesBtn.addEventListener('touchend', function(e) {
             e.preventDefault();
+            yesBtn.classList.remove('pressed');
             sayYes();
         });
 
@@ -433,25 +444,53 @@
         const songTitle = document.getElementById('songTitle');
         let isPlaying = false;
 
+        function startMusic() {
+            if (!isPlaying) {
+                music.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.textContent = '🔊';
+                    musicBtn.classList.add('playing');
+                    songTitle.classList.add('show');
+                    setTimeout(() => songTitle.classList.remove('show'), 3000);
+                }).catch(() => {
+                    // Autoplay blocked, will try on first interaction
+                });
+            }
+        }
+
         function toggleMusic() {
             if (isPlaying) {
                 music.pause();
                 musicBtn.textContent = '🎵';
                 musicBtn.classList.remove('playing');
                 songTitle.classList.remove('show');
+                isPlaying = false;
             } else {
-                music.play();
-                musicBtn.textContent = '🔊';
-                musicBtn.classList.add('playing');
-                songTitle.classList.add('show');
-                setTimeout(() => songTitle.classList.remove('show'), 3000);
+                startMusic();
             }
-            isPlaying = !isPlaying;
         }
 
-        musicBtn.addEventListener('click', toggleMusic);
+        // Try to autoplay
+        startMusic();
+
+        // If autoplay blocked, start on first tap anywhere
+        document.addEventListener('touchstart', function initMusic() {
+            startMusic();
+            document.removeEventListener('touchstart', initMusic);
+        }, { once: true });
+
+        document.addEventListener('click', function initMusicClick() {
+            startMusic();
+            document.removeEventListener('click', initMusicClick);
+        }, { once: true });
+
+        musicBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleMusic();
+        });
         musicBtn.addEventListener('touchend', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             toggleMusic();
         });
 
