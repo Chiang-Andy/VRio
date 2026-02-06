@@ -88,21 +88,22 @@
             background: linear-gradient(135deg, #ff6b6b, #c44569);
             color: white;
             box-shadow: 0 4px 15px rgba(196, 69, 105, 0.3);
+            padding: 20px 50px;
+            font-size: 1.4rem;
         }
 
         .btn-yes:hover, .btn-yes:active {
-            transform: scale(1.08);
+            transform: scale(1.1);
             box-shadow: 0 6px 25px rgba(196, 69, 105, 0.45);
         }
 
         .btn-no {
             background: #ddd;
             color: #666;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: all 0.2s ease;
+            position: fixed;
+            transition: all 0.3s ease;
             white-space: nowrap;
+            z-index: 50;
         }
 
         .success-message {
@@ -293,13 +294,19 @@
         ];
 
         function moveButton() {
-            const maxX = 150;
-            const maxY = 120;
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            const padding = 20;
 
-            const randomX = (Math.random() - 0.5) * 2 * maxX;
-            const randomY = (Math.random() - 0.5) * 2 * maxY;
+            const maxX = window.innerWidth - btnWidth - padding;
+            const maxY = window.innerHeight - btnHeight - padding;
 
-            noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            const randomX = padding + Math.random() * maxX;
+            const randomY = padding + Math.random() * maxY;
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.transform = 'none';
         }
 
         function handleNoInteraction(e) {
