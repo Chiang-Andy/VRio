@@ -293,8 +293,8 @@
         ];
 
         function moveButton() {
-            const maxX = 80;
-            const maxY = 60;
+            const maxX = 150;
+            const maxY = 120;
 
             const randomX = (Math.random() - 0.5) * 2 * maxX;
             const randomY = (Math.random() - 0.5) * 2 * maxY;
@@ -304,12 +304,9 @@
 
         function handleNoInteraction(e) {
             e.preventDefault();
-            noClickCount++;
-            if (noClickCount < messages.length) {
-                noBtn.textContent = messages[noClickCount];
-            } else {
-                noBtn.textContent = messages[messages.length - 1];
-            }
+            // Pick a random message each time
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            noBtn.textContent = messages[randomIndex];
             moveButton();
         }
 
