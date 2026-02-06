@@ -95,8 +95,8 @@
 
         @media screen and (max-width: 768px) {
             .btn-yes {
-                padding: 30px 65px !important;
-                font-size: 2rem !important;
+                padding: 20px 45px !important;
+                font-size: 1.5rem !important;
             }
         }
 
@@ -408,14 +408,20 @@
         // Position No button properly on load
         function initNoButton() {
             const yesRect = yesBtn.getBoundingClientRect();
-            noBtn.style.left = (yesRect.right + 30) + 'px';
-            noBtn.style.top = yesRect.top + 'px';
-
-            // Make sure it's on screen
             const btnWidth = noBtn.offsetWidth;
-            if (parseFloat(noBtn.style.left) + btnWidth > window.innerWidth - 20) {
-                noBtn.style.left = (yesRect.left - btnWidth - 30) + 'px';
+
+            // Position to the right of Yes button
+            let leftPos = yesRect.right + 20;
+
+            // If it would go off screen, position it below the Yes button to the right
+            if (leftPos + btnWidth > window.innerWidth - 20) {
+                leftPos = yesRect.left + yesRect.width / 2;
+                noBtn.style.top = (yesRect.bottom + 15) + 'px';
+            } else {
+                noBtn.style.top = (yesRect.top + yesRect.height / 2 - noBtn.offsetHeight / 2) + 'px';
             }
+
+            noBtn.style.left = leftPos + 'px';
         }
 
         setTimeout(initNoButton, 100);
