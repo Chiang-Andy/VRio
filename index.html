@@ -129,6 +129,56 @@
             animation: sway 2s ease-in-out infinite;
         }
 
+        .music-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .music-btn.playing {
+            animation: pulse-music 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-music {
+            0%, 100% { box-shadow: 0 4px 15px rgba(196, 69, 105, 0.3); }
+            50% { box-shadow: 0 4px 25px rgba(196, 69, 105, 0.6); }
+        }
+
+        .song-title {
+            position: fixed;
+            bottom: 25px;
+            right: 80px;
+            font-size: 12px;
+            color: #666;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 200;
+        }
+
+        .song-title.show {
+            opacity: 1;
+        }
+
         @keyframes sway {
             0%, 100% { transform: rotate(-3deg); }
             50% { transform: rotate(3deg); }
@@ -261,6 +311,12 @@
 
     <div class="confetti" id="confetti"></div>
 
+    <audio id="bgMusic" loop>
+        <source src="best-part.mp3" type="audio/mpeg">
+    </audio>
+    <div class="song-title" id="songTitle">Best Part - Daniel Caesar</div>
+    <button class="music-btn" id="musicBtn">🎵</button>
+
     <script>
         // Create floating hearts
         function createFloatingHearts() {
@@ -369,6 +425,34 @@
         yesBtn.addEventListener('touchend', function(e) {
             e.preventDefault();
             sayYes();
+        });
+
+        // Music player
+        const music = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const songTitle = document.getElementById('songTitle');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicBtn.textContent = '🎵';
+                musicBtn.classList.remove('playing');
+                songTitle.classList.remove('show');
+            } else {
+                music.play();
+                musicBtn.textContent = '🔊';
+                musicBtn.classList.add('playing');
+                songTitle.classList.add('show');
+                setTimeout(() => songTitle.classList.remove('show'), 3000);
+            }
+            isPlaying = !isPlaying;
+        }
+
+        musicBtn.addEventListener('click', toggleMusic);
+        musicBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            toggleMusic();
         });
 
         createFloatingHearts();
