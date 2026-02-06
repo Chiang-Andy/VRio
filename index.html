@@ -66,11 +66,6 @@
             margin-top: 20px;
         }
 
-        .btn-no-wrapper {
-            position: relative;
-            width: 100px;
-            height: 50px;
-        }
 
         .btn {
             padding: 16px 36px;
@@ -100,8 +95,8 @@
 
         @media screen and (max-width: 768px) {
             .btn-yes {
-                padding: 40px 90px !important;
-                font-size: 2.5rem !important;
+                padding: 30px 65px !important;
+                font-size: 2rem !important;
             }
         }
 
@@ -302,10 +297,8 @@
             <div class="roses">🌹🌹🌹</div>
             <div class="buttons">
                 <button class="btn btn-yes" id="yesBtn">Yes!</button>
-                <div class="btn-no-wrapper">
-                    <button class="btn btn-no" id="noBtn">No</button>
-                </div>
             </div>
+            <button class="btn btn-no" id="noBtn">No</button>
         </div>
 
         <div class="success-message" id="success">
@@ -344,7 +337,6 @@
 
         // No button runs away
         const noBtn = document.getElementById('noBtn');
-        const noWrapper = document.querySelector('.btn-no-wrapper');
         let noClickCount = 0;
         const messages = [
             "Are you sure?",
@@ -362,16 +354,42 @@
             const btnHeight = noBtn.offsetHeight;
             const padding = 20;
 
-            const maxX = window.innerWidth - btnWidth - padding;
-            const maxY = window.innerHeight - btnHeight - padding;
+            // Get Yes button position to avoid overlap
+            const yesRect = yesBtn.getBoundingClientRect();
 
-            const randomX = padding + Math.random() * maxX;
-            const randomY = padding + Math.random() * maxY;
+            let randomX, randomY;
+            let attempts = 0;
+
+            do {
+                randomX = padding + Math.random() * (window.innerWidth - btnWidth - padding * 2);
+                randomY = padding + Math.random() * (window.innerHeight - btnHeight - padding * 2);
+                attempts++;
+            } while (
+                attempts < 50 &&
+                randomX < yesRect.right + 20 &&
+                randomX + btnWidth > yesRect.left - 20 &&
+                randomY < yesRect.bottom + 20 &&
+                randomY + btnHeight > yesRect.top - 20
+            );
 
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
-            noBtn.style.transform = 'none';
         }
+
+        // Position No button properly on load
+        function initNoButton() {
+            const yesRect = yesBtn.getBoundingClientRect();
+            noBtn.style.left = (yesRect.right + 30) + 'px';
+            noBtn.style.top = yesRect.top + 'px';
+
+            // Make sure it's on screen
+            const btnWidth = noBtn.offsetWidth;
+            if (parseFloat(noBtn.style.left) + btnWidth > window.innerWidth - 20) {
+                noBtn.style.left = (yesRect.left - btnWidth - 30) + 'px';
+            }
+        }
+
+        setTimeout(initNoButton, 100);
 
         function handleNoInteraction(e) {
             e.preventDefault();
