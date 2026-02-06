@@ -210,6 +210,35 @@
             opacity: 0.6;
         }
 
+        .floating-text {
+            position: absolute;
+            font-size: 16px;
+            color: #c44569;
+            opacity: 0;
+            white-space: nowrap;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+            animation: floatText 8s ease-in-out infinite;
+        }
+
+        @keyframes floatText {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateX(calc(100vw + 100%));
+                opacity: 0;
+            }
+        }
+
         @keyframes float {
             0%, 100% {
                 transform: translateY(100vh) rotate(0deg);
@@ -513,6 +542,50 @@
         });
 
         createFloatingHearts();
+        createFloatingTexts();
+
+        // Create floating love messages
+        function createFloatingTexts() {
+            const container = document.getElementById('floatingHearts');
+            const messages = [
+                "I love you",
+                "You're the one",
+                "You're the best",
+                "You're my everything",
+                "Forever yours",
+                "My heart is yours",
+                "You make me happy",
+                "You're beautiful",
+                "Always & forever",
+                "You're amazing",
+                "My soulmate",
+                "You're perfect",
+                "I adore you",
+                "You're my sunshine",
+                "Dream come true",
+                "Lucky to have you",
+                "You're my world",
+                "Crazy about you",
+                "Be mine forever",
+                "You + Me = ❤️"
+            ];
+
+            function addFloatingText() {
+                const text = document.createElement('div');
+                text.className = 'floating-text';
+                text.textContent = messages[Math.floor(Math.random() * messages.length)];
+                text.style.top = (10 + Math.random() * 80) + '%';
+                text.style.animationDuration = (6 + Math.random() * 4) + 's';
+                text.style.fontSize = (14 + Math.random() * 8) + 'px';
+                container.appendChild(text);
+
+                setTimeout(() => text.remove(), 10000);
+            }
+
+            // Add one immediately, then periodically
+            addFloatingText();
+            setInterval(addFloatingText, 3000);
+        }
     </script>
 </body>
 </html>
